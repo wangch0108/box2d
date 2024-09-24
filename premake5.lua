@@ -1,24 +1,28 @@
 project "Box2D"
 	kind "StaticLib"
-	language "C++"
-	cppdialect "C++11"
+	language "C"
+	cdialect  "C17"
 	staticruntime "off"
+	visibility "Hidden" -- gcc compile option
+	warnings "off" -- 隐藏一些编译警告
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files
 	{
+		"src/**.c",
 		"src/**.h",
-		"src/**.cpp",
-		"include/**.h"
+		"include/**.h",
 	}
 
 	includedirs
 	{
 		"include",
-		"src"
 	}
+
+	filter { "system:windows", "action:vs*" }
+		buildoptions { "/experimental:c11atomics" }
 
 	filter "system:windows"
 		systemversion "latest"
@@ -26,6 +30,7 @@ project "Box2D"
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
+		-- targetsuffix "_d"
 
 	filter "configurations:Release"
 		runtime "Release"
